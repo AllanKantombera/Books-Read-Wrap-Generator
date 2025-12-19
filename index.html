@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Books Read Wrap Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#0a0a0a',
+                        'dark-card': '#111111',
+                        'dark-border': '#222222',
+                        'neon-yellow': '#FFE900',
+                        'neon-yellow-light': '#FFF59D',
+                        'cyber-black': '#000000',
+                        'cyber-gray': '#1a1a1a',
+                        'cyber-gray-light': '#2a2a2a',
+                    },
+                    fontFamily: {
+                        'cyber': ['Orbitron', 'monospace'],
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'neon-border': 'neonBorder 1.5s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { 'text-shadow': '0 0 5px #FFE900, 0 0 10px #FFE900, 0 0 15px #FFE900' },
+                            '100%': { 'text-shadow': '0 0 10px #FFE900, 0 0 20px #FFE900, 0 0 30px #FFE900' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.7' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        neonBorder: {
+                            '0%': { 'box-shadow': '0 0 5px #FFE900, inset 0 0 5px #FFE900' },
+                            '100%': { 'box-shadow': '0 0 15px #FFE900, inset 0 0 10px #FFE900' },
+                        },
+                    },
+                    backgroundImage: {
+                        'grid-pattern': 'linear-gradient(rgba(255, 233, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 233, 0, 0.05) 1px, transparent 1px)',
+                        'diagonal-pattern': 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 233, 0, 0.03) 10px, rgba(255, 233, 0, 0.03) 20px)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 233, 0, 0.05);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 233, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 233, 0, 0.5);
+        }
+        
+        /* Cyberpunk effect for the preview */
+        .cyber-border {
+            position: relative;
+            border: 1px solid rgba(255, 233, 0, 0.3);
+            box-shadow: 
+                0 0 10px rgba(255, 233, 0, 0.2),
+                inset 0 0 10px rgba(255, 233, 0, 0.1);
+        }
+        
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #FFE900, transparent, #FFE900);
+            z-index: -1;
+            border-radius: inherit;
+            opacity: 0.5;
+        }
+        
+        /* Book card styling */
+        .book-card {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #FFE900, #FFB300);
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(255, 233, 0, 0.2);
+        }
+        
+        /* Glitch effect for title */
+        .glitch-text {
+            position: relative;
+            color: #FFE900;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #FF0000;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #00FFFF;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(20px, 9999px, 85px, 0); }
+            5% { clip: rect(65px, 9999px, 90px, 0); }
+            10% { clip: rect(30px, 9999px, 100px, 0); }
+            15% { clip: rect(50px, 9999px, 60px, 0); }
+            20% { clip: rect(80px, 9999px, 120px, 0); }
+            25% { clip: rect(25px, 9999px, 85px, 0); }
+            30% { clip: rect(65px, 9999px, 90px, 0); }
+            35% { clip: rect(30px, 9999px, 100px, 0); }
+            40% { clip: rect(50px, 9999px, 60px, 0); }
+            45% { clip: rect(80px, 9999px, 120px, 0); }
+            50% { clip: rect(25px, 9999px, 85px, 0); }
+            55% { clip: rect(65px, 9999px, 90px, 0); }
+            60% { clip: rect(30px, 9999px, 100px, 0); }
+            65% { clip: rect(50px, 9999px, 60px, 0); }
+            70% { clip: rect(80px, 9999px, 120px, 0); }
+            75% { clip: rect(25px, 9999px, 85px, 0); }
+            80% { clip: rect(65px, 9999px, 90px, 0); }
+            85% { clip: rect(30px, 9999px, 100px, 0); }
+            90% { clip: rect(50px, 9999px, 60px, 0); }
+            95% { clip: rect(80px, 9999px, 120px, 0); }
+            100% { clip: rect(25px, 9999px, 85px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(80px, 9999px, 140px, 0); }
+            5% { clip: rect(10px, 9999px, 65px, 0); }
+            10% { clip: rect(70px, 9999px, 100px, 0); }
+            15% { clip: rect(10px, 9999px, 30px, 0); }
+            20% { clip: rect(60px, 9999px, 110px, 0); }
+            25% { clip: rect(80px, 9999px, 140px, 0); }
+            30% { clip: rect(10px, 9999px, 65px, 0); }
+            35% { clip: rect(70px, 9999px, 100px, 0); }
+            40% { clip: rect(10px, 9999px, 30px, 0); }
+            45% { clip: rect(60px, 9999px, 110px, 0); }
+            50% { clip: rect(80px, 9999px, 140px, 0); }
+            55% { clip: rect(10px, 9999px, 65px, 0); }
+            60% { clip: rect(70px, 9999px, 100px, 0); }
+            65% { clip: rect(10px, 9999px, 30px, 0); }
+            70% { clip: rect(60px, 9999px, 110px, 0); }
+            75% { clip: rect(80px, 9999px, 140px, 0); }
+            80% { clip: rect(10px, 9999px, 65px, 0); }
+            85% { clip: rect(70px, 9999px, 100px, 0); }
+            90% { clip: rect(10px, 9999px, 30px, 0); }
+            95% { clip: rect(60px, 9999px, 110px, 0); }
+            100% { clip: rect(80px, 9999px, 140px, 0); }
+        }
+        
+        /* Scanline effect for preview */
+        .scanlines {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scanlines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(255, 233, 0, 0.03) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+    </style>
+</head>
+<body class="bg-cyber-black text-white min-h-screen p-4 md:p-6">
+    <!-- Animated background elements -->
+    <div class="fixed inset-0 bg-grid-pattern bg-[length:40px_40px] opacity-10 pointer-events-none"></div>
+    <div class="fixed inset-0 bg-diagonal-pattern opacity-5 pointer-events-none"></div>
+    
+    <div class="max-w-7xl mx-auto relative z-10">
+        <!-- Header -->
+        <header class="text-center mb-12 md:mb-16 animate-fade-in">
+            <div class="inline-block p-5 rounded-2xl bg-cyber-gray border border-neon-yellow border-opacity-30 mb-6 animate-pulse-glow">
+                <i class="fas fa-book-open text-5xl text-neon-yellow"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-cyber">
+                <span class="glitch-text" data-text="2025 BOOKS READ WRAP">2025 BOOKS READ WRAP</span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                <span class="text-neon-yellow font-semibold">Generate your cyber-style reading wrap</span> - Enter your books and create a neon-lit visual summary of your 2025 reading journey.
+            </p>
+        </header>
+        
+        <div class="flex flex-col lg:flex-row gap-8 mb-12">
+            <!-- Input Section -->
+            <div class="lg:w-1/2 animate-slide-up">
+                <div class="bg-cyber-gray rounded-2xl p-6 md:p-8 h-full cyber-border">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="p-3 rounded-xl bg-cyber-black border border-neon-yellow border-opacity-40">
+                            <i class="fas fa-terminal text-3xl text-neon-yellow"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-white font-cyber">DATA INPUT</h2>
+                            <p class="text-gray-400">Enter your reading details</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- Name Input -->
+                        <div>
+                            <label for="userName" class="block text-lg font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-neon-yellow rounded-full"></span>
+                                <span>USER IDENTIFIER</span>
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    id="userName" 
+                                    placeholder="ENTER YOUR NAME" 
+                                    value="ALEX JOHNSON"
+                                    class="w-full p-4 bg-cyber-black border-2 border-cyber-gray-light rounded-xl focus:border-neon-yellow focus:ring-2 focus:ring-neon-yellow focus:ring-opacity-30 transition-all duration-300 outline-none text-lg text-white font-medium tracking-wide placeholder-gray-500"
+                                >
+                                <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-user text-neon-yellow"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Books List Input -->
+                        <div>
+                            <label for="booksList" class="block text-lg font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-neon-yellow rounded-full"></span>
+                                <span>BOOKS DATABASE</span>
+                            </label>
+                            <div class="relative">
+                                <textarea 
+                                    id="booksList" 
+                                    rows="10" 
+                                    placeholder="ENTER EACH BOOK ON A NEW LINE. FORMAT: TITLE - AUTHOR"
+                                    class="w-full p-4 bg-cyber-black border-2 border-cyber-gray-light rounded-xl focus:border-neon-yellow focus:ring-2 focus:ring-neon-yellow focus:ring-opacity-30 transition-all duration-300 outline-none text-white font-medium tracking-wide placeholder-gray-500 resize-y custom-scrollbar"
+                                >THE MIDNIGHT LIBRARY - MATT HAIG
+PROJECT HAIL MARY - ANDY WEIR
+KLARA AND THE SUN - KAZUO ISHIGURO
+THE INVISIBLE LIFE OF ADDIE LARUE - V.E. SCHWAB
+THE FOUR WINDS - KRISTIN HANNAH
+MALIBU RISING - TAYLOR JENKINS REID
+THE PARIS LIBRARY - JANET SKESLIEN CHARLES
+CLOUD CUCKOO LAND - ANTHONY DOERR
+THE LAST THING HE TOLD ME - LAURA DAVE
+THE PUSH - ASHLEY AUDRAIN</textarea>
+                                <div class="absolute right-4 top-4">
+                                    <i class="fas fa-database text-neon-yellow"></i>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-gray-500 text-sm flex items-center gap-2">
+                                <i class="fas fa-info-circle text-neon-yellow"></i>
+                                Each entry on a new line. Author optional after dash separator.
+                            </p>
+                        </div>
+                        
+                        <!-- Total Books Input -->
+                        <div>
+                            <label for="totalBooks" class="block text-lg font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-neon-yellow rounded-full"></span>
+                                <span>TOTAL VOLUMES</span>
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    id="totalBooks" 
+                                    min="1" 
+                                    max="1000" 
+                                    value="10"
+                                    class="w-full p-4 bg-cyber-black border-2 border-cyber-gray-light rounded-xl focus:border-neon-yellow focus:ring-2 focus:ring-neon-yellow focus:ring-opacity-30 transition-all duration-300 outline-none text-lg text-white font-medium tracking-wide"
+                                >
+                                <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                                    <i class="fas fa-hashtag text-neon-yellow"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Generate Button -->
+                        <button 
+                            id="generateBtn"
+                            class="w-full bg-cyber-black border-2 border-neon-yellow text-neon-yellow font-bold py-5 px-6 rounded-xl hover:bg-neon-yellow hover:text-cyber-black transition-all duration-300 transform hover:-translate-y-1 text-lg mt-4 font-cyber tracking-wider group"
+                        >
+                            <i class="fas fa-bolt mr-3 group-hover:rotate-12 transition-transform"></i>
+                            GENERATE READING WRAP
+                        </button>
+                        
+                        <!-- Tip Box -->
+                        <div class="bg-cyber-black border border-neon-yellow border-opacity-30 rounded-xl p-5 mt-6">
+                            <div class="flex items-start gap-4">
+                                <div class="p-2 rounded-lg bg-neon-yellow bg-opacity-10">
+                                    <i class="fas fa-lightbulb text-neon-yellow text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-neon-yellow mb-1">SYSTEM NOTE</p>
+                                    <p class="text-gray-400">After generation, you can download your wrap as a high-res image or share it across networks.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview Section -->
+            <div class="lg:w-1/2 animate-slide-up" style="animation-delay: 0.1s">
+                <div class="bg-cyber-black rounded-2xl p-6 md:p-8 h-full flex flex-col cyber-border">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-cyber-gray border border-neon-yellow border-opacity-40">
+                                <i class="fas fa-desktop text-3xl text-neon-yellow"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-white font-cyber">WRAP PREVIEW</h2>
+                                <p class="text-gray-400">Live rendering</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Wrap Preview Container -->
+                    <div class="bg-gradient-to-br from-cyber-black to-cyber-gray rounded-xl p-6 flex-grow flex flex-col overflow-hidden custom-scrollbar scanlines" id="wrapPreview">
+                        <!-- Wrap Header -->
+                        <div class="text-center mb-8">
+                            <div class="text-2xl md:text-3xl font-bold text-neon-yellow animate-glow mb-2 font-cyber tracking-wider">[2025 READING WRAP]</div>
+                            <div class="text-xl text-gray-300 mb-4 font-cyber">SYSTEM GENERATED SUMMARY</div>
+                            <div class="text-3xl md:text-4xl font-bold text-white uppercase tracking-wider mt-6 font-cyber border-b border-neon-yellow border-opacity-30 pb-4 inline-block" id="previewName">ALEX JOHNSON</div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="flex justify-center mb-10">
+                            <div class="bg-cyber-gray border border-neon-yellow border-opacity-30 rounded-xl p-6 inline-flex items-center gap-6 animate-neon-border">
+                                <div class="text-6xl font-bold text-neon-yellow font-cyber" id="previewTotal">10</div>
+                                <div class="text-white text-xl font-cyber tracking-wider">BOOKS<br>PROCESSED</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Books List -->
+                        <div class="mb-4 flex-grow">
+                            <div class="text-center mb-6">
+                                <h3 class="text-xl font-bold text-neon-yellow inline-block border-b border-neon-yellow pb-2 font-cyber tracking-wider">READING DATABASE OUTPUT</h3>
+                            </div>
+                            <div id="previewBooksList" class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
+                                <!-- Book cards will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Footer of Preview -->
+                        <div class="mt-6 pt-4 border-t border-neon-yellow border-opacity-20 text-center">
+                            <p class="text-gray-400 text-sm font-cyber tracking-wider">WRAP GENERATED: <span class="text-neon-yellow">SYSTEM ONLINE</span></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                        <button 
+                            id="downloadBtn"
+                            class="bg-cyber-black border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-cyber-black font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 group font-cyber tracking-wider"
+                        >
+                            <i class="fas fa-download group-hover:animate-bounce"></i> DOWNLOAD IMAGE
+                        </button>
+                        <button 
+                            id="shareBtn"
+                            class="bg-cyber-black border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-cyber-black font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 group font-cyber tracking-wider"
+                        >
+                            <i class="fas fa-share-alt group-hover:rotate-12 transition-transform"></i> SHARE WRAP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="text-center py-8 border-t border-cyber-gray-light mt-8">
+            <div class="flex flex-col md:flex-row justify-center items-center gap-3 text-gray-500">
+                <p class="flex items-center gap-2">
+                    <i class="fas fa-code text-neon-yellow"></i>
+                    <span>SYSTEM VERSION 2025.1</span>
+                </p>
+                <span class="hidden md:inline text-neon-yellow">|</span>
+                <p class="flex items-center gap-2">
+                    <i class="fas fa-heart text-red-500"></i>
+                    <span>FOR LITERARY ENTHUSIASTS</span>
+                </p>
+                <span class="hidden md:inline text-neon-yellow">|</span>
+                <p class="flex items-center gap-2">
+                    <i class="fas fa-terminal text-neon-yellow"></i>
+                    <span>WRAP GENERATOR ACTIVE</span>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Include html2canvas for downloading as image -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const userNameInput = document.getElementById('userName');
+            const booksListInput = document.getElementById('booksList');
+            const totalBooksInput = document.getElementById('totalBooks');
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            
+            const previewName = document.getElementById('previewName');
+            const previewTotal = document.getElementById('previewTotal');
+            const previewBooksList = document.getElementById('previewBooksList');
+            
+            // Sample book data for initial preview
+            const sampleBooks = [
+                "THE MIDNIGHT LIBRARY - MATT HAIG",
+                "PROJECT HAIL MARY - ANDY WEIR",
+                "KLARA AND THE SUN - KAZUO ISHIGURO",
+                "THE INVISIBLE LIFE OF ADDIE LARUE - V.E. SCHWAB",
+                "THE FOUR WINDS - KRISTIN HANNAH",
+                "MALIBU RISING - TAYLOR JENKINS REID",
+                "THE PARIS LIBRARY - JANET SKESLIEN CHARLES",
+                "CLOUD CUCKOO LAND - ANTHONY DOERR",
+                "THE LAST THING HE TOLD ME - LAURA DAVE",
+                "THE PUSH - ASHLEY AUDRAIN"
+            ];
+            
+            // Initialize the preview with sample data
+            updatePreview();
+            
+            // Event listeners
+            generateBtn.addEventListener('click', updatePreview);
+            
+            userNameInput.addEventListener('input', function() {
+                previewName.textContent = this.value.toUpperCase() || "READER";
+            });
+            
+            totalBooksInput.addEventListener('input', function() {
+                previewTotal.textContent = this.value;
+                updatePreview();
+            });
+            
+            downloadBtn.addEventListener('click', downloadWrap);
+            shareBtn.addEventListener('click', shareWrap);
+            
+            // Update the preview
+            function updatePreview() {
+                // Update name
+                previewName.textContent = userNameInput.value.toUpperCase() || "READER";
+                
+                // Update total books
+                const totalBooks = parseInt(totalBooksInput.value) || 0;
+                previewTotal.textContent = totalBooks;
+                
+                // Parse books from textarea
+                const booksText = booksListInput.value.trim();
+                let booksArray = booksText ? booksListInput.value.toUpperCase().split('\n') : sampleBooks;
+                
+                // Filter out empty lines and trim
+                booksArray = booksArray.filter(book => book.trim() !== '');
+                
+                // Limit to the number of books specified
+                if (totalBooks > 0) {
+                    booksArray = booksArray.slice(0, totalBooks);
+                }
+                
+                // Clear current book list
+                previewBooksList.innerHTML = '';
+                
+                // Generate book cards with animation delay
+                booksArray.forEach((book, index) => {
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card bg-cyber-gray rounded-lg p-4 border border-cyber-gray-light animate-fade-in';
+                    bookCard.style.animationDelay = `${index * 0.05}s`;
+                    
+                    // Parse book title and author
+                    let title = book.trim();
+                    let author = "";
+                    
+                    if (book.includes('-')) {
+                        const parts = book.split('-');
+                        title = parts[0].trim();
+                        author = parts.slice(1).join('-').trim();
+                    }
+                    
+                    // Format number with leading zero for cyber aesthetic
+                    const bookNumber = (index + 1).toString().padStart(2, '0');
+                    
+                    bookCard.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-cyber-black border border-neon-yellow border-opacity-40 flex items-center justify-center text-neon-yellow font-bold mr-4 font-cyber">
+                                ${bookNumber}
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-white text-lg mb-1 tracking-wide">${title}</h4>
+                                ${author ? `<p class="text-neon-yellow-light text-opacity-80 text-sm font-medium">BY: ${author}</p>` : ''}
+                            </div>
+                            <div class="flex-shrink-0 ml-2">
+                                <i class="fas fa-book text-neon-yellow text-opacity-50"></i>
+                            </div>
+                        </div>
+                    `;
+                    
+                    previewBooksList.appendChild(bookCard);
+                });
+                
+                // If no books, show a message
+                if (booksArray.length === 0) {
+                    const emptyMessage = document.createElement('div');
+                    emptyMessage.className = 'col-span-2 text-center py-10';
+                    emptyMessage.innerHTML = `
+                        <div class="inline-block p-5 rounded-xl bg-cyber-gray border border-dashed border-neon-yellow border-opacity-30 mb-4">
+                            <i class="fas fa-exclamation-triangle text-4xl text-neon-yellow text-opacity-50"></i>
+                        </div>
+                        <p class="text-neon-yellow-light text-opacity-70 font-cyber tracking-wider">NO BOOKS DETECTED IN DATABASE</p>
+                        <p class="text-gray-500 mt-2">Add books to generate your reading wrap</p>
+                    `;
+                    previewBooksList.appendChild(emptyMessage);
+                }
+                
+                // Add cyber terminal effect to the stats
+                const statElement = document.querySelector('.animate-neon-border');
+                if (statElement) {
+                    statElement.classList.remove('animate-neon-border');
+                    void statElement.offsetWidth; // Trigger reflow
+                    statElement.classList.add('animate-neon-border');
+                }
+            }
+            
+            // Download wrap as image
+            function downloadWrap() {
+                // Show loading state
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> RENDERING IMAGE...';
+                downloadBtn.disabled = true;
+                
+                // Use html2canvas to capture the wrap
+                html2canvas(document.getElementById('wrapPreview'), {
+                    backgroundColor: '#0a0a0a',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true,
+                    onclone: function(clonedDoc) {
+                        // Remove animations for the screenshot
+                        const preview = clonedDoc.getElementById('wrapPreview');
+                        if (preview) {
+                            preview.classList.remove('scanlines');
+                        }
+                    }
+                }).then(canvas => {
+                    // Convert canvas to image
+                    const link = document.createElement('a');
+                    const fileName = `CYBER_WRAP_${userNameInput.value.toUpperCase() || 'READER'}_2025.png`;
+                    link.download = fileName;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    // Reset button
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                    
+                    // Show success message
+                    showNotification('Wrap downloaded successfully!', 'success');
+                }).catch(error => {
+                    console.error('Error generating image:', error);
+                    showNotification('Render error. Please try again.', 'error');
+                    
+                    // Reset button
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                });
+            }
+            
+            // Share wrap
+            function shareWrap() {
+                // Create a share text
+                const shareText = `CYBER READING WRAP 2025: ${previewName.textContent} processed ${previewTotal.textContent} volumes.`;
+                
+                // Check if Web Share API is available
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'CYBER READING WRAP 2025',
+                        text: shareText,
+                        url: window.location.href
+                    })
+                    .then(() => {
+                        showNotification('Wrap transmitted successfully!', 'success');
+                    })
+                    .catch(error => {
+                        console.log('Error sharing:', error);
+                        // User canceled the share, no need to show error
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    const textToCopy = `${shareText} ACCESS PORTAL: ${window.location.href}`;
+                    
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => {
+                            showNotification('Wrap data copied to clipboard!', 'success');
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy: ', err);
+                            showNotification('Transmission failed. Manual copy required.', 'error');
+                        });
+                }
+            }
+            
+            // Auto-update preview when books list changes
+            booksListInput.addEventListener('input', function() {
+                // Update total books count based on lines
+                const lines = this.value.trim().split('\n').filter(line => line.trim() !== '');
+                totalBooksInput.value = lines.length || 0;
+                updatePreview();
+            });
+            
+            // Notification function
+            function showNotification(message, type) {
+                // Remove any existing notification
+                const existingNotification = document.querySelector('.notification');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+                
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification fixed top-6 right-6 z-50 p-5 rounded-xl border font-cyber tracking-wider animate-slide-up ${
+                    type === 'success' 
+                    ? 'bg-cyber-gray border-green-500 text-green-400' 
+                    : 'bg-cyber-gray border-red-500 text-red-400'
+                }`;
+                
+                notification.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="p-2 rounded-lg ${
+                            type === 'success' 
+                            ? 'bg-green-500 bg-opacity-20' 
+                            : 'bg-red-500 bg-opacity-20'
+                        }">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">${type === 'success' ? 'SYSTEM MESSAGE' : 'ALERT'}</p>
+                            <p class="text-sm mt-1">${message}</p>
+                        </div>
+                        <button class="ml-4 text-gray-400 hover:text-white" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 4 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.3s';
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+            
+            // Add initial animation
+            setTimeout(() => {
+                document.querySelectorAll('.book-card').forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.05}s`;
+                });
+            }, 100);
+            
+            // Add cyber sound effect on button clicks (optional - for fun)
+            function playClickSound() {
+                // Create a simple beep sound using Web Audio API
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                } catch (e) {
+                    // Audio context not supported, silently fail
+                }
+            }
+            
+            // Add click sounds to buttons
+            [generateBtn, downloadBtn, shareBtn].forEach(button => {
+                button.addEventListener('click', playClickSound);
+            });
+        });
+    </script>
+</body>
+</html>
